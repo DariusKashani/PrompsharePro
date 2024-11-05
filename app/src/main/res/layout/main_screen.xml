@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background">
+
+        <!-- Header -->
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="@layout/header" />
+
+        <!-- Small Text in Header -->
+        <TextView
+            android:id="@+id/textAD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/header"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="14dp"
+            android:layout_marginEnd="26dp"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#FFFFFF" />
+
+        <!-- Divider Below Header -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp"
+            android:src="@android:drawable/divider_horizontal_bright" />
+
+        <!-- Black Divider Line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000"
+            android:layout_below="@id/header" />
+
+        <!-- Content Section -->
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title Text -->
+            <TextView
+                android:id="@+id/textm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Malzemeler"
+                android:textSize="20dp"
+                android:textColor="#000000" />
+
+            <!-- Search EditText -->
+            <EditText
+                android:id="@+id/editaramalzeme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search Malzemeler"
+                android:ems="10" />
+
+            <!-- Search Button -->
+            <Button
+                android:id="@+id/btnmalzlist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ara" />
+
+            <!-- First ListView -->
+
+            <!-- Second ListView -->
+
+            <ListView
+                android:id="@+id/mylist"
+                android:layout_width="match_parent"
+                android:layout_height="541dp"
+                android:background="#FFFFFF" />
+
+            <ListView
+                android:id="@+id/listsecili"
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:background="#FFFFFF" />
+
+            <!-- Multi-line EditText for Notes -->
+            <EditText
+                android:id="@+id/txtNot"
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:hint="Enter notes here"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:lines="6" />
+        </LinearLayout>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btnkaydet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout1"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"
+            android:text="Malzeme Ekle" />
+
+        <!-- Send Button -->
+        <Button
+            android:id="@+id/btntoplugonder"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnkaydet"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:text="Toplu Gonder" />
+
+    </RelativeLayout>
+</ScrollView>
