@@ -10,9 +10,9 @@ import java.util.List;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
-    private List<Comment> comments;
+    private List<PostDatabase.Comment> comments;
 
-    public CommentsAdapter(List<Comment> comments) {
+    public CommentsAdapter(List<PostDatabase.Comment> comments) {
         this.comments = comments;
     }
 
@@ -25,14 +25,19 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        Comment comment = comments.get(position);
-        holder.commentText.setText(comment.getText());
-        holder.commentAuthor.setText(comment.getAuthor());
+        PostDatabase.Comment comment = comments.get(position);
+        holder.commentText.setText(comment.getCommentNotes());
+        holder.commentAuthor.setText(comment.getCommentAuthor());
     }
 
     @Override
     public int getItemCount() {
         return comments.size();
+    }
+
+    public void setComments(List<PostDatabase.Comment> newComments) {
+        this.comments = newComments;
+        notifyDataSetChanged();
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {

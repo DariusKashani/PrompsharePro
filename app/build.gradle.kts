@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-
+    implementation ("io.realm:realm-android-library:10.10.1")
     implementation(libs.androidx.core.ktx)
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
