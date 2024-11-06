@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Back button -->
         <ImageView
+            android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back"
@@ -18,8 +18,8 @@
             android:layout_gravity="start"
             android:padding="8dp" />
 
-        <!-- Title for the post -->
         <TextView
+            android:id="@+id/post_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Title your post"
@@ -28,9 +28,10 @@
             android:layout_marginTop="16dp" />
 
         <EditText
+            android:id="@+id/title_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ex. Create an IOS minesweeper app."
+            android:hint="ex. Create an iOS Minesweeper app."
             android:padding="12dp"
             android:background="@drawable/edittext_background"
             android:layout_marginTop="8dp"
@@ -38,7 +39,6 @@
             android:maxLines="1"
             android:ellipsize="end" />
 
-        <!-- Choose LLM -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,6 +48,7 @@
             android:layout_marginTop="16dp" />
 
         <EditText
+            android:id="@+id/llm_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="ex. Claude Anthropic"
@@ -58,17 +59,16 @@
             android:maxLines="1"
             android:ellipsize="end" />
 
-        <!-- Notes -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif"
             android:text="Notes"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/notes_input"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:hint="Enter notes here..."
@@ -79,8 +79,8 @@
             android:inputType="textMultiLine"
             android:scrollbars="vertical" />
 
-        <!-- Create Post Button -->
         <Button
+            android:id="@+id/create_post_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Create Post"
