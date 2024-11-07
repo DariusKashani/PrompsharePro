@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "833583771588",
+    "project_id": "promptsharepro-c81ce",
+    "storage_bucket": "promptsharepro-c81ce.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833583771588:android:03468a48cf189475077e91",
+        "android_client_info": {
+          "package_name": "com.example.promptsharepro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk5mbobvwTwqrakNvn7j5o-sRg0GwPRng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
