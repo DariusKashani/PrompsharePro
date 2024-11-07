@@ -63,7 +63,6 @@ public class SinglePostScreenActivity extends AppCompatActivity {
         commentsRecyclerView = findViewById(R.id.comments_recycler_view);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Get comments from the post and set up the adapter
         List<PostDatabase.Comment> comments = post.getComments();
         commentsAdapter = new CommentsAdapter(comments);
         commentsRecyclerView.setAdapter(commentsAdapter);
@@ -80,12 +79,17 @@ public class SinglePostScreenActivity extends AppCompatActivity {
             return;
         }
 
-        // Use createComment to add the comment to the post in PostDatabase
         boolean success = postDatabase.createComment(post.getPostId(), String.valueOf(post.getComments().size() + 1), commentText, "Current User"); // Replace "Current User" with actual username
 
         if (success) {
-            commentsAdapter.notifyDataSetChanged(); // Refresh the comments view
-            commentInput.setText(""); // Clear the input field
+            PostDatabase.Comment newComment = new PostDatabase.Comment(String.valueOf(post.getComments().size() + 1), commentText, "Current User");
+            post.getComments().add(newComment);
+
+            commentsAdapter.notifyItemInserted(post.getComments().size() - 1);
+
+            commentsRecyclerView.scrollToPosition(post.getComments().size() - 1);
+
+            commentInput.setText("");
         } else {
             Toast.makeText(this, "Failed to add comment", Toast.LENGTH_SHORT).show();
         }

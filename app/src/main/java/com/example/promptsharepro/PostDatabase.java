@@ -1,18 +1,26 @@
 package com.example.promptsharepro;
 
+import android.os.StrictMode;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PostDatabase {
 
+    private static final String BASE_URL = "https://promptshareproserver-production.up.railway.app"; // Replace with your FastAPI server URL
     private static PostDatabase instance;
-    private Map<String, Post> posts; // Map to store posts by postId
 
     private PostDatabase() {
-        posts = new HashMap<>();
-        initializeSamplePosts();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     public static synchronized PostDatabase getInstance() {
@@ -22,73 +30,121 @@ public class PostDatabase {
         return instance;
     }
 
-    // Sample posts initialization
-    private void initializeSamplePosts() {
-        Post post1 = new Post("1", "CSCI 270 Homework", "Aaron Cote", "Claude Anthropic", "270 is a very cool class.", 4);
-        post1.addComment(new Comment("1", "Great post!", "User A"));
-        post1.addComment(new Comment("2", "Very informative.", "User B"));
-
-        Post post2 = new Post("2", "Apple IOS Dev", "Marco Papa", "ChatGPT", "Apple is very cool.", 2);
-        post2.addComment(new Comment("3", "Thanks for sharing!", "User C"));
-
-        posts.put(post1.getPostId(), post1);
-        posts.put(post2.getPostId(), post2);
-    }
-
-    // Get all posts, optionally filtered by title, author, LLM, or notes
     public List<Post> getAllPosts(String filter) {
-        List<Post> filteredPosts = new ArrayList<>();
-        for (Post post : posts.values()) {
-            if (filter.isEmpty() ||
-                    post.getPostTitle().toLowerCase().contains(filter.toLowerCase()) ||
-                    post.getPostAuthor().toLowerCase().contains(filter.toLowerCase()) ||
-                    post.getPostLLM().toLowerCase().contains(filter.toLowerCase()) ||
-                    post.getPostNotes().toLowerCase().contains(filter.toLowerCase())) {
-                filteredPosts.add(post);
+        List<Post> posts = new ArrayList<>();
+        try {
+            String urlString = BASE_URL + "/getAllPosts" + (filter.isEmpty() ? "" : "?filter=" + filter);
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                JSONArray postsArray = new JSONObject(response.toString()).getJSONArray("posts");
+
+                for (int i = 0; i < postsArray.length(); i++) {
+                    JSONObject postObject = postsArray.getJSONObject(i);
+                    Post post = parsePostFromJson(postObject);
+                    posts.add(post);
+                }
             }
+            conn.disconnect();
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error fetching posts: " + e.getMessage());
         }
-        return filteredPosts;
+        return posts;
     }
 
-    // Get a specific post by ID
     public Post getPost(String postId) {
-        return posts.get(postId);
-    }
+        try {
+            String urlString = BASE_URL + "/getPost?postId=" + postId;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-    // Create a new post
-    public boolean createPost(String postId, String title, String author, String llm, String notes, int rating) {
-        if (posts.containsKey(postId)) {
-            return false; // Post with this ID already exists
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                JSONObject postObject = new JSONObject(response.toString()).getJSONObject("post");
+                return parsePostFromJson(postObject);
+            }
+            conn.disconnect();
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error fetching post: " + e.getMessage());
         }
-        posts.put(postId, new Post(postId, title, author, llm, notes, rating));
-        return true;
+        return null;
     }
 
-    // Delete a post by ID
-    public boolean deletePost(String postId) {
-        return posts.remove(postId) != null;
-    }
+    public boolean createPost(String title, String author, String llm, String notes, int rating) {
+        try {
+            String urlString = BASE_URL + "/createPost?postTitle=" + title + "&postAuthor=" + author +
+                    "&postLLM=" + llm + "&postNotes=" + notes + "&postRating=" + rating;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-    // Add a comment to a specific post
-    public boolean createComment(String postId, String commentId, String commentNotes, String commentAuthor) {
-        Post post = posts.get(postId);
-        if (post != null) {
-            post.addComment(new Comment(commentId, commentNotes, commentAuthor));
-            return true;
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error creating post: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
-    // Delete a comment from a post by comment ID
-    public boolean deleteComment(String postId, String commentId) {
-        Post post = posts.get(postId);
-        if (post != null) {
-            return post.removeComment(commentId);
+    public boolean createComment(String postId, String commentNotes, String commentAuthor, String currentUser) {
+        try {
+            String urlString = BASE_URL + "/createComment?postId=" + postId + "&commentNotes=" + commentNotes +
+                    "&commentAuthor=" + commentAuthor;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error creating comment: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
-    // Inner Post class
+    private Post parsePostFromJson(JSONObject postObject) throws Exception {
+        String postId = postObject.getString("_id");
+        String postTitle = postObject.getString("postTitle");
+        String postAuthor = postObject.getString("postAuthor");
+        String postLLM = postObject.getString("postLLM");
+        String postNotes = postObject.getString("postNotes");
+        int postRating = postObject.getInt("postRating");
+
+        Post post = new Post(postId, postTitle, postAuthor, postLLM, postNotes, postRating);
+
+        JSONArray commentsArray = postObject.getJSONArray("comments");
+        for (int j = 0; j < commentsArray.length(); j++) {
+            JSONObject commentObject = commentsArray.getJSONObject(j);
+            Comment comment = new Comment(
+                    commentObject.getString("commentId"),
+                    commentObject.getString("commentNotes"),
+                    commentObject.getString("commentAuthor")
+            );
+            post.addComment(comment);
+        }
+        return post;
+    }
+
     public static class Post {
         private String postId;
         private String postTitle;
@@ -112,40 +168,15 @@ public class PostDatabase {
             comments.add(comment);
         }
 
-        public boolean removeComment(String commentId) {
-            return comments.removeIf(comment -> comment.getCommentId().equals(commentId));
-        }
-
-        public String getPostId() {
-            return postId;
-        }
-
-        public String getPostTitle() {
-            return postTitle;
-        }
-
-        public String getPostAuthor() {
-            return postAuthor;
-        }
-
-        public String getPostLLM() {
-            return postLLM;
-        }
-
-        public String getPostNotes() {
-            return postNotes;
-        }
-
-        public int getPostRating() {
-            return postRating;
-        }
-
-        public List<Comment> getComments() {
-            return comments;
-        }
+        public String getPostId() { return postId; }
+        public String getPostTitle() { return postTitle; }
+        public String getPostAuthor() { return postAuthor; }
+        public String getPostLLM() { return postLLM; }
+        public String getPostNotes() { return postNotes; }
+        public int getPostRating() { return postRating; }
+        public List<Comment> getComments() { return comments; }
     }
 
-    // Inner Comment class
     public static class Comment {
         private String commentId;
         private String commentNotes;
@@ -157,16 +188,8 @@ public class PostDatabase {
             this.commentAuthor = commentAuthor;
         }
 
-        public String getCommentId() {
-            return commentId;
-        }
-
-        public String getCommentNotes() {
-            return commentNotes;
-        }
-
-        public String getCommentAuthor() {
-            return commentAuthor;
-        }
+        public String getCommentId() { return commentId; }
+        public String getCommentNotes() { return commentNotes; }
+        public String getCommentAuthor() { return commentAuthor; }
     }
 }

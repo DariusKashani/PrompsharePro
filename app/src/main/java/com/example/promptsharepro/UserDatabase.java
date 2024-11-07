@@ -1,16 +1,21 @@
 package com.example.promptsharepro;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.os.StrictMode;
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class UserDatabase {
 
+    private static final String BASE_URL = "https://promptshareproserver-production.up.railway.app"; // Replace with your FastAPI server URL
     private static UserDatabase instance;
-    private Map<String, User> users; // Map to store users by userId
 
     private UserDatabase() {
-        users = new HashMap<>();
-        // Initialize with sample user data if needed
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     public static synchronized UserDatabase getInstance() {
@@ -20,40 +25,75 @@ public class UserDatabase {
         return instance;
     }
 
-    public User getUserByEmail(String email) {
-        for (User user : users.values()) {
-            if (user.getUserEmail().equals(email)) {
-                return user;
-            }
+    public boolean registerUser(String userName, String userEmail, String userPassword) {
+        try {
+            String urlString = BASE_URL + "/registerUser?username=" + userName + "&email=" + userEmail + "&password=" + userPassword;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("UserDatabase", "Registration error: " + e.getMessage());
+            return false;
         }
-        return null;
     }
 
-    // Register a new user
-    public boolean registerUser(String userId, String userName, String userEmail, String userPassword) {
-        if (users.containsKey(userId)) {
-            return false; // User with this ID already exists
-        }
-        users.put(userId, new User(userId, userName, userEmail, userPassword));
-        return true;
-    }
-
-    // Delete an existing user by userId
-    public boolean deleteUser(String userId) {
-        return users.remove(userId) != null;
-    }
-
-    // Login a user by checking email and password
     public boolean loginUser(String userEmail, String userPassword) {
-        for (User user : users.values()) {
-            if (user.getUserEmail().equals(userEmail) && user.getUserPassword().equals(userPassword)) {
-                return true; // Login successful
-            }
+        try {
+
+            String urlString = BASE_URL + "/loginUser?email=" + userEmail + "&password=" + userPassword;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("UserDatabase", "Login error: " + e.getMessage());
+            return false;
         }
-        return false; // Login failed
     }
 
-    // Inner User class
+    public User getUserByEmail(String email) {
+        try {
+            String urlString = BASE_URL + "/getUserByEmail?email=" + email;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                conn.disconnect();
+
+                String[] userData = response.toString().replace("{", "").replace("}", "").split(",");
+                String userId = userData[0].split(":")[1].replace("\"", "");
+                String userName = userData[1].split(":")[1].replace("\"", "");
+                String userEmail = userData[2].split(":")[1].replace("\"", "");
+
+                return new User(userId, userName, userEmail, ""); // Password not returned for security
+            } else {
+                conn.disconnect();
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e("UserDatabase", "Error fetching user by email: " + e.getMessage());
+            return null;
+        }
+    }
+
     public static class User {
         private String userId;
         private String userName;
@@ -71,11 +111,9 @@ public class UserDatabase {
             return userId;
         }
 
-
         public String getUserName() {
             return userName;
         }
-
 
         public String getUserEmail() {
             return userEmail;
@@ -85,5 +123,4 @@ public class UserDatabase {
             return userPassword;
         }
     }
-
 }

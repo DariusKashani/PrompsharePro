@@ -38,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString().trim();
                 String userId = email;
 
-                if (userDatabase.registerUser(userId, fullName, email, password)) {
+                if (userDatabase.registerUser(fullName, email, password)) {
                     Intent intent = new Intent(RegisterActivity.this, HomeScreenActivity.class);
                     intent.putExtra("username", fullName);
                     startActivity(intent);

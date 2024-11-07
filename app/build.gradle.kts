@@ -50,7 +50,8 @@ android {
 }
 
 dependencies {
-    implementation ("org.mongodb:mongodb-driver-sync:4.2.3")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.google.code.gson:gson:2.11.0")
     implementation(libs.androidx.core.ktx)
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)

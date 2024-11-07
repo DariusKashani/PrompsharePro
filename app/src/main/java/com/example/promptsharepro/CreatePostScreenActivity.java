@@ -27,22 +27,16 @@ public class CreatePostScreenActivity extends AppCompatActivity {
 
         Button createPostButton = findViewById(R.id.create_post_button);
         createPostButton.setOnClickListener(view -> {
-            // Get input values
             String title = titleInput.getText().toString().trim();
             String llm = llmInput.getText().toString().trim();
             String notes = notesInput.getText().toString().trim();
 
-            // Validate inputs
             if (title.isEmpty() || llm.isEmpty() || notes.isEmpty()) {
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Generate a unique post ID
-            String postId = String.valueOf(System.currentTimeMillis());
-
-            // Create the post with a default rating of 0
-            boolean success = postDatabase.createPost(postId, title, "Current User", llm, notes, 0);
+            boolean success = postDatabase.createPost(title, "Current User", llm, notes, 0);
 
             if (success) {
                 Toast.makeText(this, "Post created successfully", Toast.LENGTH_SHORT).show();

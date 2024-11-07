@@ -26,14 +26,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        new Thread(() -> {
-            try {
-                MongoDBExample.insertDocument();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
 
