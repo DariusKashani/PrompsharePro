@@ -6,98 +6,98 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-<!--    <TextView-->
-<!--        android:id="@+id/teamNameTextView"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="TEAM 42."-->
-<!--        android:textSize="36sp"-->
-<!--        android:textStyle="bold"-->
-<!--        tools:layout_editor_absoluteX="100dp"-->
-<!--        tools:layout_editor_absoluteY="26dp" />-->
+    <TextView
+        android:id="@+id/teamNameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TEAM 42."
+        android:textSize="36sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="26dp" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/findPromptsTextView"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/teamNameTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Find the best prompts!"-->
-<!--        android:textSize="18sp"-->
-<!--        tools:layout_editor_absoluteX="96dp"-->
-<!--        tools:layout_editor_absoluteY="96dp" />-->
+    <TextView
+        android:id="@+id/findPromptsTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/teamNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Find the best prompts!"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="96dp"
+        tools:layout_editor_absoluteY="96dp" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/fullNameEditText"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/fullNameTextView"-->
-<!--        android:layout_width="323dp"-->
-<!--        android:layout_height="43dp"-->
-<!--        android:hint="Full Name"-->
-<!--        tools:layout_editor_absoluteX="16dp"-->
-<!--        tools:layout_editor_absoluteY="181dp"-->
-<!--        tools:ignore="UnknownId" />-->
+    <EditText
+        android:id="@+id/fullNameEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/findPromptsTextView"
+        android:layout_width="323dp"
+        android:layout_height="43dp"
+        android:hint="Full Name"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="181dp" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/emailRegisterEditText"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/emailTextView"-->
-<!--        android:layout_width="323dp"-->
-<!--        android:layout_height="49dp"-->
-<!--        android:hint="Email"-->
-<!--        tools:layout_editor_absoluteX="16dp"-->
-<!--        tools:layout_editor_absoluteY="229dp" />-->
+    <EditText
+        android:id="@+id/emailRegisterEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fullNameEditText"
+        android:layout_width="323dp"
+        android:layout_height="49dp"
+        android:hint="Email"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="229dp" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/passwordRegisterEditText"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/passwordTextView"-->
-<!--        android:layout_width="320dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:hint="Password"-->
-<!--        tools:layout_editor_absoluteX="16dp"-->
-<!--        tools:layout_editor_absoluteY="283dp" />-->
+    <EditText
+        android:id="@+id/passwordRegisterEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailRegisterEditText"
+        android:layout_width="320dp"
+        android:layout_height="50dp"
+        android:hint="Password"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="283dp" />
 
-<!--    <Button-->
-<!--        android:id="@+id/registerButton"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/passwordRegisterEditText"-->
-<!--        android:layout_width="201dp"-->
-<!--        android:layout_height="61dp"-->
-<!--        android:background="@android:color/black"-->
-<!--        android:text="Register"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        tools:layout_editor_absoluteX="75dp"-->
-<!--        tools:layout_editor_absoluteY="441dp" />-->
+    <Button
+        android:id="@+id/registerButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordRegisterEditText"
+        android:layout_width="201dp"
+        android:layout_height="61dp"
+        android:background="@android:color/black"
+        android:text="Register"
+        android:textColor="@android:color/white"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="441dp" />
 
-<!--    <TextView-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/registerButton"-->
-<!--        android:layout_width="167dp"-->
-<!--        android:layout_height="33dp"-->
-<!--        android:text="Already have an account?"-->
-<!--        tools:layout_editor_absoluteX="98dp"-->
-<!--        tools:layout_editor_absoluteY="525dp" />-->
+    <TextView
+        android:id="@+id/alreadyHaveAccountTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/registerButton"
+        android:layout_width="167dp"
+        android:layout_height="33dp"
+        android:text="Already have an account?"
+        tools:layout_editor_absoluteX="98dp"
+        tools:layout_editor_absoluteY="525dp" />
 
-<!--    <Button-->
-<!--        android:id="@+id/loginButton"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/registerButton"-->
-<!--        android:layout_width="191dp"-->
-<!--        android:layout_height="57dp"-->
-<!--        android:background="@android:color/darker_gray"-->
-<!--        android:text="Login"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        tools:layout_editor_absoluteX="85dp"-->
-<!--        tools:layout_editor_absoluteY="574dp" />-->
+    <Button
+        android:id="@+id/loginButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alreadyHaveAccountTextView"
+        android:layout_width="191dp"
+        android:layout_height="57dp"
+        android:background="@android:color/darker_gray"
+        android:text="Login"
+        android:textColor="@android:color/white"
+        tools:layout_editor_absoluteX="85dp"
+        tools:layout_editor_absoluteY="574dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

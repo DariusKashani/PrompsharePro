@@ -20,6 +20,15 @@ public class UserDatabase {
         return instance;
     }
 
+    public User getUserByEmail(String email) {
+        for (User user : users.values()) {
+            if (user.getUserEmail().equals(email)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     // Register a new user
     public boolean registerUser(String userId, String userName, String userEmail, String userPassword) {
         if (users.containsKey(userId)) {
@@ -58,6 +67,16 @@ public class UserDatabase {
             this.userPassword = userPassword;
         }
 
+        public String getUserId() {
+            return userId;
+        }
+
+
+        public String getUserName() {
+            return userName;
+        }
+
+
         public String getUserEmail() {
             return userEmail;
         }
@@ -66,4 +85,5 @@ public class UserDatabase {
             return userPassword;
         }
     }
+
 }

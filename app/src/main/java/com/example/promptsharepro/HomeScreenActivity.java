@@ -15,27 +15,36 @@ import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
-    private List<PostDatabase.Post> displayedPosts; // List to keep only filtered posts
+    private List<PostDatabase.Post> displayedPosts;
     private LinearLayout postListLayout;
     private EditText searchInput;
     private PostDatabase postDatabase;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        postDatabase = PostDatabase.getInstance();
+        new Thread(() -> {
+            try {
+                MongoDBExample.insertDocument();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
 
         TextView greetingTextView = findViewById(R.id.greeting);
-        greetingTextView.setText("Hi, Keshav!");
+        greetingTextView.setText("Hi, " + username + "!");
 
+        postDatabase = PostDatabase.getInstance();
         Button createPostButton = findViewById(R.id.create_post_button);
         createPostButton.setOnClickListener(view -> startActivity(new Intent(this, CreatePostScreenActivity.class)));
 
         postListLayout = findViewById(R.id.post_list);
-
-        // Initialize the search input and set up TextWatcher for search functionality
         searchInput = findViewById(R.id.search_input);
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -50,24 +59,21 @@ public class HomeScreenActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Display all posts initially
         updatePostList();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updatePostList(); // Refresh posts whenever this activity resumes
+        updatePostList();
     }
 
     private void updatePostList() {
-        // Retrieve and display all posts without a filter
         displayedPosts = postDatabase.getAllPosts("");
         displayPosts(displayedPosts);
     }
 
     private void filterPosts(String query) {
-        // Retrieve filtered posts using PostDatabase's method
         displayedPosts = postDatabase.getAllPosts(query);
         displayPosts(displayedPosts);
     }
@@ -95,7 +101,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             Button readMoreButton = postItem.findViewById(R.id.read_more_button);
             readMoreButton.setOnClickListener(view -> {
                 Intent intent = new Intent(this, SinglePostScreenActivity.class);
-                intent.putExtra("postId", post.getPostId()); // Pass only the post ID
+                intent.putExtra("postId", post.getPostId());
                 startActivity(intent);
             });
 
