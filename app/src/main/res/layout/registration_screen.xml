@@ -54,15 +54,26 @@
         tools:layout_editor_absoluteY="229dp" />
 
     <EditText
-        android:id="@+id/passwordRegisterEditText"
+        android:id="@+id/uscIdEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/emailRegisterEditText"
+        android:layout_width="323dp"
+        android:layout_height="49dp"
+        android:hint="Enter USC ID"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="283dp" />
+
+    <EditText
+        android:id="@+id/passwordRegisterEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/uscIdEditText"
         android:layout_width="320dp"
         android:layout_height="50dp"
         android:hint="Password"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="283dp" />
+        tools:layout_editor_absoluteY="337dp" />
 
     <Button
         android:id="@+id/registerButton"

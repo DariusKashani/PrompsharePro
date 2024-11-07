@@ -86,7 +86,7 @@ public class PostDatabase {
         return null;
     }
 
-    public boolean createPost(String title, String author, String llm, String notes, int rating) {
+    public boolean createPost(String title, String author, String llm, String notes, String rating) {
         try {
             String urlString = BASE_URL + "/createPost?postTitle=" + title + "&postAuthor=" + author +
                     "&postLLM=" + llm + "&postNotes=" + notes + "&postRating=" + rating;
@@ -100,6 +100,24 @@ public class PostDatabase {
             return responseCode == HttpURLConnection.HTTP_OK;
         } catch (Exception e) {
             Log.e("PostDatabase", "Error creating post: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean updatePost(String postId, String title, String author, String llm, String notes, String rating) {
+        try {
+            String urlString = BASE_URL + "/updatePost?postId=" + postId + "&postTitle=" + title +
+                    "&postAuthor=" + author + "&postLLM=" + llm + "&postNotes=" + notes + "&postRating=" + rating;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error updating post: " + e.getMessage());
             return false;
         }
     }
@@ -128,7 +146,7 @@ public class PostDatabase {
         String postAuthor = postObject.getString("postAuthor");
         String postLLM = postObject.getString("postLLM");
         String postNotes = postObject.getString("postNotes");
-        int postRating = postObject.getInt("postRating");
+        String postRating = postObject.getString("postRating");
 
         Post post = new Post(postId, postTitle, postAuthor, postLLM, postNotes, postRating);
 
@@ -151,10 +169,10 @@ public class PostDatabase {
         private String postAuthor;
         private String postLLM;
         private String postNotes;
-        private int postRating;
+        private String postRating;
         private List<Comment> comments;
 
-        public Post(String postId, String postTitle, String postAuthor, String postLLM, String postNotes, int postRating) {
+        public Post(String postId, String postTitle, String postAuthor, String postLLM, String postNotes, String postRating) {
             this.postId = postId;
             this.postTitle = postTitle;
             this.postAuthor = postAuthor;
@@ -173,7 +191,8 @@ public class PostDatabase {
         public String getPostAuthor() { return postAuthor; }
         public String getPostLLM() { return postLLM; }
         public String getPostNotes() { return postNotes; }
-        public int getPostRating() { return postRating; }
+        public String getPostRating() { return postRating; }
+        public void setPostRating(String postRating) { this.postRating = postRating; }
         public List<Comment> getComments() { return comments; }
     }
 

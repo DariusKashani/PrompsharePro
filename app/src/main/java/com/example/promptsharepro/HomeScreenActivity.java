@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 
@@ -32,9 +33,22 @@ public class HomeScreenActivity extends AppCompatActivity {
         TextView greetingTextView = findViewById(R.id.greeting);
         greetingTextView.setText("Hi, " + username + "!");
 
+        TextView logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(view -> {
+            Intent logoutIntent = new Intent(HomeScreenActivity.this, LoginActivity.class);
+            logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(logoutIntent);
+            finish();
+            Toast.makeText(HomeScreenActivity.this, "Logged out", Toast.LENGTH_SHORT).show();
+        });
+
         postDatabase = PostDatabase.getInstance();
         Button createPostButton = findViewById(R.id.create_post_button);
-        createPostButton.setOnClickListener(view -> startActivity(new Intent(this, CreatePostScreenActivity.class)));
+        createPostButton.setOnClickListener(view -> {
+            Intent createPostScreenIntent = new Intent(this, CreatePostScreenActivity.class);
+            createPostScreenIntent.putExtra("username", username);
+            startActivity(createPostScreenIntent);
+        });
 
         postListLayout = findViewById(R.id.post_list);
         searchInput = findViewById(R.id.search_input);
@@ -84,8 +98,17 @@ public class HomeScreenActivity extends AppCompatActivity {
             TextView llmName = postItem.findViewById(R.id.post_llm);
             llmName.setText(post.getPostLLM());
 
-            TextView rating = postItem.findViewById(R.id.post_rating);
-            rating.setText(String.valueOf(post.getPostRating()));
+            TextView ratingTextView = postItem.findViewById(R.id.post_rating);
+
+            String postRating = post.getPostRating();
+            String ratingValue = "0";
+
+            if (postRating.contains(";users:")) {
+                String[] parts = postRating.split(";users:");
+                ratingValue = parts[0].replace("rating:", "").trim();
+            }
+
+            ratingTextView.setText(ratingValue);
 
             TextView notes = postItem.findViewById(R.id.post_notes);
             notes.setText(post.getPostNotes());
@@ -94,6 +117,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             readMoreButton.setOnClickListener(view -> {
                 Intent intent = new Intent(this, SinglePostScreenActivity.class);
                 intent.putExtra("postId", post.getPostId());
+                intent.putExtra("username", username);
                 startActivity(intent);
             });
 

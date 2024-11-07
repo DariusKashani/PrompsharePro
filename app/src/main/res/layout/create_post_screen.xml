@@ -71,7 +71,7 @@
             android:id="@+id/notes_input"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:hint="Enter notes here..."
+            android:hint="Enter prompt and author notes here..."
             android:padding="12dp"
             android:background="@drawable/edittext_background"
             android:layout_marginTop="8dp"

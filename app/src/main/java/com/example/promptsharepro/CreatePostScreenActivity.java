@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreatePostScreenActivity extends AppCompatActivity {
 
     private PostDatabase postDatabase;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +18,9 @@ public class CreatePostScreenActivity extends AppCompatActivity {
         setContentView(R.layout.create_post_screen);
 
         postDatabase = PostDatabase.getInstance();
+
+        // Retrieve the username passed from HomeScreenActivity
+        username = getIntent().getStringExtra("username");
 
         ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(view -> finish());
@@ -36,11 +40,13 @@ public class CreatePostScreenActivity extends AppCompatActivity {
                 return;
             }
 
-            boolean success = postDatabase.createPost(title, "Current User", llm, notes, 0);
+            String initialRating = "rating: 0;users:";
+
+            boolean success = postDatabase.createPost(title, username, llm, notes, initialRating);
 
             if (success) {
                 Toast.makeText(this, "Post created successfully", Toast.LENGTH_SHORT).show();
-                finish(); // Close the activity and return to the previous screen
+                finish();
             } else {
                 Toast.makeText(this, "Failed to create post", Toast.LENGTH_SHORT).show();
             }

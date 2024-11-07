@@ -9,6 +9,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SinglePostScreenActivity extends AppCompatActivity {
@@ -16,8 +19,10 @@ public class SinglePostScreenActivity extends AppCompatActivity {
     private RecyclerView commentsRecyclerView;
     private CommentsAdapter commentsAdapter;
     private EditText commentInput;
+    private TextView ratingTextView;
     private PostDatabase.Post post;
     private PostDatabase postDatabase;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +34,15 @@ public class SinglePostScreenActivity extends AppCompatActivity {
 
         postDatabase = PostDatabase.getInstance();
 
-        // Retrieve post by ID from PostDatabase
         String postId = getIntent().getStringExtra("postId");
+        username = getIntent().getStringExtra("username");
+
         post = postDatabase.getPost(postId);
 
         if (post != null) {
             initialLoad(post);
             setupCommentsSection();
+            setupRatingControls();
         } else {
             Toast.makeText(this, "Post not found", Toast.LENGTH_SHORT).show();
             finish();
@@ -52,8 +59,16 @@ public class SinglePostScreenActivity extends AppCompatActivity {
         TextView llmTextView = findViewById(R.id.post_llm);
         llmTextView.setText(post.getPostLLM());
 
-        TextView ratingTextView = findViewById(R.id.post_rating);
-        ratingTextView.setText(String.valueOf(post.getPostRating()));
+        ratingTextView = findViewById(R.id.post_rating);
+        String postRating = post.getPostRating();
+        String ratingValue = "0";
+
+        if (postRating.contains(";users:")) {
+            String[] parts = postRating.split(";users:");
+            ratingValue = parts[0].replace("rating:", "").trim(); // Extract the rating number
+        }
+
+        ratingTextView.setText(ratingValue);
 
         TextView notesTextView = findViewById(R.id.notes);
         notesTextView.setText(post.getPostNotes());
@@ -72,6 +87,55 @@ public class SinglePostScreenActivity extends AppCompatActivity {
         addCommentButton.setOnClickListener(view -> addComment());
     }
 
+    private void setupRatingControls() {
+        Button minusButton = findViewById(R.id.minus_button);
+        Button plusButton = findViewById(R.id.plus_button);
+
+        minusButton.setOnClickListener(view -> updateRating(-1));
+        plusButton.setOnClickListener(view -> updateRating(1));
+    }
+
+    private void updateRating(int change) {
+        String postRating = post.getPostRating();
+        int currentRating = 0;
+        List<String> users = new ArrayList<>();
+
+        if (postRating.contains(";users:")) {
+            String[] parts = postRating.split(";users:");
+            currentRating = Integer.parseInt(parts[0].replace("rating:", "").trim());
+
+            if (parts.length > 1 && !parts[1].trim().isEmpty()) {
+                users = new ArrayList<>(Arrays.asList(parts[1].trim().split(", ")));
+            }
+        } else {
+            currentRating = Integer.parseInt(postRating.replace("rating:", "").trim());
+        }
+
+        if (change > 0) { // Upvote
+            if (users.contains(username)) {
+                Toast.makeText(this, "You have already upvoted", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                currentRating += 1;
+                users.add(username);
+            }
+        } else {
+            if (users.contains(username)) {
+                currentRating = Math.max(0, currentRating - 1);
+                users.remove(username);
+            } else {
+                Toast.makeText(this, "You haven't upvoted yet", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        String updatedPostRating = "rating: " + currentRating + ";users: " + String.join(", ", users);
+        ratingTextView.setText(String.valueOf(currentRating));
+
+        post.setPostRating(updatedPostRating);
+        postDatabase.updatePost(post.getPostId(), post.getPostTitle(), post.getPostAuthor(), post.getPostLLM(), post.getPostNotes(), updatedPostRating); // Assuming this method updates the database
+    }
+
     private void addComment() {
         String commentText = commentInput.getText().toString().trim();
         if (commentText.isEmpty()) {
@@ -79,10 +143,10 @@ public class SinglePostScreenActivity extends AppCompatActivity {
             return;
         }
 
-        boolean success = postDatabase.createComment(post.getPostId(), String.valueOf(post.getComments().size() + 1), commentText, "Current User"); // Replace "Current User" with actual username
+        boolean success = postDatabase.createComment(post.getPostId(), String.valueOf(post.getComments().size() + 1), commentText, username);
 
         if (success) {
-            PostDatabase.Comment newComment = new PostDatabase.Comment(String.valueOf(post.getComments().size() + 1), commentText, "Current User");
+            PostDatabase.Comment newComment = new PostDatabase.Comment(String.valueOf(post.getComments().size() + 1), commentText, username);
             post.getComments().add(newComment);
 
             commentsAdapter.notifyItemInserted(post.getComments().size() - 1);

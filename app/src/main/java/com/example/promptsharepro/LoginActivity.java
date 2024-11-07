@@ -27,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.registerButton);
 
         userDatabase = UserDatabase.getInstance();
+        passwordEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
