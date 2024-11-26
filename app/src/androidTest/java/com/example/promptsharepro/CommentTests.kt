@@ -12,7 +12,7 @@ class CommentTests {
 
     @Test
     fun addComment() {
-        // Select the first post in the list (using the RecyclerView ID)
+        // Select the first post in the list
         onView(withId(R.id.post_list))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
@@ -20,24 +20,25 @@ class CommentTests {
         onView(withHint("Type here..."))
             .perform(typeText("This is a comment"), closeSoftKeyboard())
 
-        // Click the "Add comment" button (using the button's text)
+        // Click the "Add comment" button (using text to identify the button)
         onView(withText("Add comment")).perform(click())
 
-        // Verify that the success message or the comment itself appears
-        onView(withText("Comment added")).check(matches(isDisplayed()))
+        // Verify that the comment appears in the list
+        onView(withId(R.id.comment_text)) // Matches the newly added comment
+            .check(matches(withText("This is a comment")))
     }
 
     @Test
     fun deleteComment() {
-        // Select the first post in the list (using the RecyclerView ID)
+        // Select the first post in the list
         onView(withId(R.id.post_list))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
-        // Perform a swipe action to delete the first comment in the RecyclerView
-        onView(withId(R.id.comment_list)) // Adjust this to match the ID of your RecyclerView for comments
-            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, swipeLeft()))
+        // Perform a swipe action to delete the first comment
+        onView(withId(R.id.comment_text)) // Target the comment directly by its ID
+            .perform(swipeLeft())
 
-        // Verify that the success message or UI reflects the deletion
+        // Verify that the comment was deleted
         onView(withText("Comment deleted")).check(matches(isDisplayed()))
     }
 }
