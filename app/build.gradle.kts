@@ -66,11 +66,11 @@ dependencies {
     implementation(libs.androidx.recyclerview) // RecyclerView support
 
     // Unit Test Dependencies
+
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core) // Mockito for mocking
     testImplementation(libs.mockito.kotlin) // Mockito Kotlin extensions
 
-    // Android Test Dependencies
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1") // Espresso contrib
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -4,6 +4,8 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import org.junit.Test
+import androidx.test.espresso.assertion.ViewAssertions.matches
+
 
 class GeneralBehaviorTests {
 
@@ -21,10 +23,10 @@ class GeneralBehaviorTests {
     @Test
     fun handleNetworkError() {
         // Simulate network error using mock tools
-        simulateNetworkError() // You need to implement this using MockWebServer or another tool
+        simulateNetworkError()
 
         // Click the refresh button to retry
-        onView(withId(R.id.btnmalzlist)).perform(click()) // Assuming this is the refresh button
+        onView(withId(R.id.create_post_button)).perform(click()) // Assuming this is the refresh button
 
         // Verify the error message is displayed
         onView(withText("Network error occurred")).check(matches(isDisplayed()))
