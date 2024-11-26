@@ -17,8 +17,8 @@ class AuthenticationTests {
         onView(withId(R.id.passwordEditText)).perform(typeText("validPassword"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        // Check if the home screen is displayed
-        onView(withId(R.id.homeScreen)).check(matches(isDisplayed()))
+        // Check if the home screen is displayed by seeing if logout button is there
+        onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
     }
 
     @Test
