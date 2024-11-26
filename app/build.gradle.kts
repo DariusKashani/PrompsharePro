@@ -50,10 +50,11 @@ android {
 }
 
 dependencies {
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation("com.google.code.gson:gson:2.11.0")
+    // General Dependencies
+    implementation("com.squareup.okhttp3:okhttp:4.9.3") // OkHttp for HTTP requests
+    implementation("com.google.code.gson:gson:2.11.0") // Gson for JSON handling
     implementation(libs.androidx.core.ktx)
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0") // ConstraintLayout
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -62,13 +63,21 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.recyclerview) // RecyclerView support
+
+    // Unit Test Dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core) // Mockito for mocking
+    testImplementation(libs.mockito.kotlin) // Mockito Kotlin extensions
+
+    // Android Test Dependencies
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1") // Espresso contrib
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Debugging Dependencies
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }
