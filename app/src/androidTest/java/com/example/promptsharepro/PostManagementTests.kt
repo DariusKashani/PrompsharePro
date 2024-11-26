@@ -13,39 +13,39 @@ class PostManagementTests {
 
     @Test
     fun createPost() {
-        // Click the "Create Post" button (button with text "Create Post")
-        onView(withText("Create Post")).perform(click())
+        // Click the "Create Post" button
+        onView(withId(R.id.create_post_button)).perform(click())
 
-        // Enter a title in the post title EditText (hint matches "ex. Create an IOS minesweeper app.")
-        onView(withHint("ex. Create an IOS minesweeper app."))
+        // Enter a title in the post title EditText (hint matches the XML)
+        onView(withHint("ex. Create an iOS Minesweeper app."))
             .perform(typeText("Test Post"), closeSoftKeyboard())
 
-        // Enter content in the post content EditText (hint matches "Enter notes here...")
-        onView(withHint("Enter notes here..."))
+        // Enter content in the notes input EditText (updated hint from XML)
+        onView(withHint("Enter prompt and author notes here..."))
             .perform(typeText("This is a test post."), closeSoftKeyboard())
 
         // Click the "Create Post" button again to submit
-        onView(withText("Create Post")).perform(click())
+        onView(withId(R.id.create_post_button)).perform(click())
 
-        // Verify success message (assumed to appear on screen or as a toast)
+        // Verify success message (assume it's a toast message)
         onView(withText("Post created successfully")).check(matches(isDisplayed()))
     }
 
     @Test
     fun createPost_EmptyContent() {
-        // Click the "Create Post" button (button with text "Create Post")
-        onView(withText("Create Post")).perform(click())
+        // Click the "Create Post" button
+        onView(withId(R.id.create_post_button)).perform(click())
 
         // Enter a title but leave the content field empty
-        onView(withHint("ex. Create an IOS minesweeper app."))
+        onView(withHint("ex. Create an iOS Minesweeper app."))
             .perform(typeText("Title"), closeSoftKeyboard())
-        onView(withHint("Enter notes here..."))
-            .perform(typeText(""), closeSoftKeyboard())
+        onView(withHint("Enter prompt and author notes here..."))
+            .perform(clearText(), closeSoftKeyboard()) // Ensure the field is empty
 
         // Click the "Create Post" button again to submit
-        onView(withText("Create Post")).perform(click())
+        onView(withId(R.id.create_post_button)).perform(click())
 
-        // Verify error message (assumed to appear on screen or as a toast)
+        // Verify error message (assume it's a toast message)
         onView(withText("Content cannot be empty")).check(matches(isDisplayed()))
     }
 }

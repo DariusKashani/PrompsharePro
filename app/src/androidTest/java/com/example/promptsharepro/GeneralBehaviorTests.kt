@@ -6,29 +6,38 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import org.junit.Test
 import androidx.test.espresso.assertion.ViewAssertions.matches
 
-
 class GeneralBehaviorTests {
 
     @Test
     fun navigateScreens() {
         // Click the login button and verify the home screen is displayed
-        onView(withId(R.id.loginButton)).perform(click())
-        onView(withText("TEAM 42.")).check(matches(isDisplayed())) // Assuming "TEAM 42." is on the home screen
+        onView(withId(R.id.loginButton)).perform(click()) // Correct ID for login button
+        onView(withId(R.id.teamNameTextView)) // Unique ID for "TEAM 42."
+            .check(matches(withText("TEAM 42."))) // Verify home screen by matching the text
 
         // Navigate to the "Create Post" screen
-        onView(withText("Create Post")).perform(click()) // Assuming the button has text "Create Post"
-        onView(withText("Title your post")).check(matches(isDisplayed())) // Verify screen by matching text
+        onView(withId(R.id.create_post_button)).perform(click()) // Correct ID for "Create Post" button
+        onView(withId(R.id.post_title)) // Unique ID for "Title your post"
+            .check(matches(withText("Title your post"))) // Verify "Create Post" screen is displayed
     }
 
     @Test
     fun handleNetworkError() {
-        // Simulate network error using mock tools
+        // Simulate network error using mock tools (implement this function)
         simulateNetworkError()
 
-        // Click the refresh button to retry
-        onView(withId(R.id.create_post_button)).perform(click()) // Assuming this is the refresh button
+        // Click the retry button (assuming it's "create_post_button" here for simplicity)
+        onView(withId(R.id.create_post_button)).perform(click())
 
         // Verify the error message is displayed
         onView(withText("Network error occurred")).check(matches(isDisplayed()))
+    }
+
+    // Simulates a network error, to be implemented using tools like MockWebServer or Mockito
+    private fun simulateNetworkError() {
+        // Example of MockWebServer usage
+        // val mockWebServer = MockWebServer()
+        // mockWebServer.enqueue(MockResponse().setResponseCode(500).setBody("Network error occurred"))
+        // mockWebServer.start()
     }
 }
