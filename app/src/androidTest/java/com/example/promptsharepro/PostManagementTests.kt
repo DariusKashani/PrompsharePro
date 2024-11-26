@@ -45,7 +45,7 @@ class PostManagementTests {
         // Click the "Create Post" button again to submit
         onView(withId(R.id.create_post_button)).perform(click())
 
-        // Verify error message (assume it's a toast message)
+        // Verify error message
         onView(withText("Content cannot be empty")).check(matches(isDisplayed()))
     }
 }

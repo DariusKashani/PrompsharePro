@@ -12,18 +12,18 @@ class SearchTests {
     @Test
     fun searchForKeyword() {
         // Enter a valid keyword into the search field
-        onView(withId(R.id.search_input)) // Assuming "searchField"
+        onView(withId(R.id.search_input))
             .perform(typeText("LLM"), closeSoftKeyboard())
 
         // Check if the result list contains a post with the keyword
-        onView(withId(R.id.post_list)) // Assuming "postList" is "mylist"
+        onView(withId(R.id.post_list))
             .check(matches(hasDescendant(withText("LLM"))))
     }
 
     @Test
     fun searchNonExistentKeyword() {
         // Enter a non-existent keyword into the search field
-        onView(withId(R.id.search_input)) // Assuming "searchField"
+        onView(withId(R.id.search_input))
             .perform(typeText("NonExistentKeyword"), closeSoftKeyboard())
 
         // Verify that "No results found" is displayed
