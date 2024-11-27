@@ -70,8 +70,12 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core) // Mockito for mocking
     testImplementation(libs.mockito.kotlin) // Mockito Kotlin extensions
-
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1") // Espresso contrib
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
+    androidTestImplementation("org.hamcrest:hamcrest-library:2.2")
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

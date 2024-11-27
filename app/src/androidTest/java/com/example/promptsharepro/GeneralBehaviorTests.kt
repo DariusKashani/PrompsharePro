@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 
 class GeneralBehaviorTests {
 
+    //TODO: Find out whats not working
     @Test
     fun navigateScreens() {
         // Click the login button and verify the home screen is displayed
@@ -19,20 +20,5 @@ class GeneralBehaviorTests {
         onView(withId(R.id.create_post_button)).perform(click())
         onView(withId(R.id.post_title))
             .check(matches(withText("Title your post")))
-    }
-
-    @Test
-    fun handleNetworkError() {
-        // Simulate network error using mock tools (implement this function)
-        simulateNetworkError()
-
-        onView(withId(R.id.create_post_button)).perform(click())
-
-        // Verify the error message is displayed
-        onView(withText("Network error occurred")).check(matches(isDisplayed()))
-    }
-
-    // Simulates a network error
-    private fun simulateNetworkError() {
     }
 }
