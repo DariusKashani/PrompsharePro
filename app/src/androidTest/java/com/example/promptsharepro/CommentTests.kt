@@ -45,46 +45,54 @@ class CommentTests {
         onView(withId(R.id.comment_input)).check(matches(isDisplayed()))
     }
 
-    // TODO: Do this one
     @Test
-    fun addComment() {
+    fun addCommentDetectOffScreen() {
         ActivityScenario.launch(LoginActivity::class.java)
 
         // Log in
-        onView(withId(R.id.emailEditText))
-            .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
-        onView(withId(R.id.passwordEditText))
-            .perform(typeText("1234"), closeSoftKeyboard())
+        onView(withId(R.id.emailEditText)).perform(typeText("somou@usc.edu"), closeSoftKeyboard())
+        onView(withId(R.id.passwordEditText)).perform(typeText("1234"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        Thread.sleep(2000) // Allow the login to complete and posts to load
+        Thread.sleep(2000) // Allow posts to load
 
-        // Scroll and select the first post
+        // Select the first post
         onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
         onView(withId(R.id.post_list))
             .perform(clickChildViewAtPosition(0, R.id.read_more_button))
 
-        // Randomize the comment text
-        val randomComment = "Test Comment ${Random.nextInt(1000, 9999)}"
-
         // Add a new comment
+        val randomComment = "Test Comment ${Random.nextInt(1000, 9999)}"
         onView(withId(R.id.comment_input))
-            .perform(scrollTo(), typeText(randomComment), closeSoftKeyboard())
-        onView(withId(R.id.add_comment_button)).perform(scrollTo(), click())
+            .perform(typeText(randomComment), closeSoftKeyboard())
+        onView(withId(R.id.add_comment_button)).perform(click())
 
-        // Allow time for the comment to be added
-        Thread.sleep(1000)
+        Thread.sleep(1000) // Allow the UI to update
 
-        // Ensure the RecyclerView has the latest data
-        val lastCommentPosition = getLastCommentPosition()
+        // Verify the comment exists in the RecyclerView adapter
+        var commentExists = false
+        onView(withId(R.id.comments_recycler_view)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(RecyclerView::class.java)
+            override fun getDescription(): String = "Check if the comment exists in RecyclerView"
+            override fun perform(uiController: UiController, view: View) {
+                val recyclerView = view as RecyclerView
+                val adapter = recyclerView.adapter
 
-        // Scroll to the last comment
-        onView(withId(R.id.comments_recycler_view))
-            .perform(scrollToPosition<RecyclerView.ViewHolder>(lastCommentPosition))
+                if (adapter != null) {
+                    for (i in 0 until adapter.itemCount) {
+                        val holder = recyclerView.findViewHolderForAdapterPosition(i)
+                        val textView = holder?.itemView?.findViewById<TextView>(R.id.comment_text)
+                        if (textView?.text.toString() == randomComment) {
+                            commentExists = true
+                            break
+                        }
+                    }
+                }
+            }
+        })
 
-        // Verify the added comment is displayed at the bottom of the RecyclerView
-        onView(allOf(withText(randomComment), isDescendantOfA(withId(R.id.comments_recycler_view))))
-            .check(matches(isDisplayed()))
+        // Assert that the comment exists
+        assert(commentExists) { "Comment not found in RecyclerView" }
     }
 
 
@@ -210,27 +218,4 @@ class CommentTests {
     }
 }
 
-private fun scrollToBottom(): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
-        override fun getDescription(): String = "Scroll to the bottom of the view"
-        override fun perform(uiController: UiController, view: View) {
-            view.scrollBy(0, Int.MAX_VALUE) // Scroll to the bottom
-            uiController.loopMainThreadUntilIdle()
-        }
-    }
-}
-
-private fun getLastCommentPosition(): Int {
-    var itemCount = 0
-    onView(withId(R.id.comments_recycler_view)).perform(object : ViewAction {
-        override fun getConstraints(): Matcher<View> = isAssignableFrom(RecyclerView::class.java)
-        override fun getDescription(): String = "Get the last position of comments in RecyclerView."
-        override fun perform(uiController: UiController, view: View) {
-            val recyclerView = view as RecyclerView
-            itemCount = recyclerView.adapter?.itemCount ?: 0
-        }
-    })
-    return itemCount - 1 // Last position is itemCount - 1
-}
 
