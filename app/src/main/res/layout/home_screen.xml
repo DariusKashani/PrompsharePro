@@ -18,6 +18,7 @@
         android:focusable="true" />
 
     <ScrollView
+        android:id="@+id/main_scroll_view"
         android:layout_below="@id/logout_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

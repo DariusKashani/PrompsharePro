@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="invalidLogin_InvalidPassword()">
+      <SelectionState runConfigName="AuthenticationTests">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="invalidLogin_EmptyFields()">
+      <SelectionState runConfigName="validRegistration()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'com.example.promptsharepro'">
+      <SelectionState runConfigName="CommentTests">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="createPost()">
+      <SelectionState runConfigName="searchPostAndClick()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="LoginActivity">
+      <SelectionState runConfigName="addComment()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

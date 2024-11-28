@@ -12,6 +12,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 @RunWith(AndroidJUnit4::class)
 class AuthenticationTests {
 
+    //TODO: Completed
     @Test
     fun validLogin() {
         ActivityScenario.launch(LoginActivity::class.java)
@@ -23,7 +24,7 @@ class AuthenticationTests {
         // Verify that the home screen is displayed (logout button exists)
         onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
     }
-
+    //TODO: Completed
     @Test
     fun invalidLogin_NonUSCEmail() {
         ActivityScenario.launch(LoginActivity::class.java)
@@ -35,7 +36,7 @@ class AuthenticationTests {
         // Verify it doesn't log in
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
     }
-
+    //TODO: Completed
     @Test
     fun invalidLogin_EmptyFields() {
         ActivityScenario.launch(LoginActivity::class.java)
@@ -45,7 +46,7 @@ class AuthenticationTests {
         // Verify it doesn't log in
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
     }
-
+    //TODO: Completed
     @Test
     fun rightEmailWrongLogin() {
         ActivityScenario.launch(LoginActivity::class.java)
@@ -57,7 +58,7 @@ class AuthenticationTests {
         // Verify it doesn't log in
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
     }
-
+    //TODO: Completed
     @Test
     fun navigateToRegistration() {
         ActivityScenario.launch(LoginActivity::class.java)
@@ -67,6 +68,8 @@ class AuthenticationTests {
         // Verify that the registration screen is displayed by checking the Full Name field
         onView(withId(R.id.fullNameEditText)).check(matches(isDisplayed()))
     }
+    //TODO: Completed
+    @Test
     fun emptyFieldsRegistration() {
         ActivityScenario.launch(RegisterActivity::class.java)
         // Fill in the registration form with valid data
@@ -76,44 +79,91 @@ class AuthenticationTests {
         // Verify that we are still on the register screen
         onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
     }
+    //TODO: Completed
+    @Test
     fun invalidEmailRegistration() {
+        // Launch the RegisterActivity
         ActivityScenario.launch(RegisterActivity::class.java)
+
         // Fill in the registration form with valid data
-        onView(withId(R.id.fullNameEditText)).perform(typeText("Mr Guy"), closeSoftKeyboard())
+        onView(withId(R.id.fullNameEditText))
+            .perform(typeText("Mr Guy"), closeSoftKeyboard())
 
-        onView(withId(R.id.emailEditText)).perform(typeText("Guy@ucla.com"), closeSoftKeyboard())
-        onView(withId(R.id.passwordEditText)).perform(typeText("password123"), closeSoftKeyboard())
+        onView(withId(R.id.emailRegisterEditText))
+            .perform(typeText("Guy@ucla.com"), closeSoftKeyboard())
 
+        onView(withId(R.id.uscIdEditText)).perform(typeText("1234567890"), closeSoftKeyboard())
+
+        onView(withId(R.id.passwordRegisterEditText))
+            .perform(typeText("password123"), closeSoftKeyboard())
+
+        // Click the "Register" button
         onView(withId(R.id.registerButton)).perform(click())
 
         // Verify that the home screen is displayed (logout button exists)
-        onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
     }
+
+    //TODO: Completed
+    @Test
     fun shortInvalidPasswordRegistration() {
         ActivityScenario.launch(RegisterActivity::class.java)
         // Fill in the registration form with valid data
-        onView(withId(R.id.fullNameEditText)).perform(typeText("John Doe"), closeSoftKeyboard())
+        onView(withId(R.id.fullNameEditText)).perform(typeText("Ms.s guy"), closeSoftKeyboard())
+        onView(withId(R.id.emailRegisterEditText)).perform(typeText("Guy@eusc.edu"), closeSoftKeyboard())
+        onView(withId(R.id.uscIdEditText)).perform(typeText("1234567890"), closeSoftKeyboard())
 
-        onView(withId(R.id.emailEditText)).perform(typeText("john.doe@example.com"), closeSoftKeyboard())
-        onView(withId(R.id.passwordEditText)).perform(typeText("23"), closeSoftKeyboard())
+        onView(withId(R.id.passwordRegisterEditText)).perform(typeText("23"), closeSoftKeyboard())
 
         onView(withId(R.id.registerButton)).perform(click())
 
         // Verify that still on register screen
         onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
     }
+    //TODO: INCOMPLETE. IT SHOULD WORK THE PROBLEM IS THE IMPLEMNTATION
+    @Test
     fun validRegistration() {
         ActivityScenario.launch(RegisterActivity::class.java)
+
+        // Generate random first and last names
+        val randomFirstName = (1..10)
+            .map { ('a'..'z').random() }
+            .joinToString("")
+            .replaceFirstChar { it.uppercaseChar() } // Capitalize the first letter
+
+        val randomLastName = (1..10)
+            .map { ('a'..'z').random() }
+            .joinToString("")
+            .replaceFirstChar { it.uppercaseChar() } // Capitalize the first letter
+
+        val randomFullName = "$randomFirstName $randomLastName"
+
+        // Generate a random email with @usc.edu domain
+        val randomEmailPrefix = (1..10)
+            .map { ('a'..'z').random() }
+            .joinToString("")
+        val randomEmail = "$randomEmailPrefix@usc.edu"
+
+        // Generate a random USC ID (10-digit number)
+        val randomUscId = (1_000_000_000L..9_999_999_999L).random().toString()
+
+        // Generate a random password (8-12 characters with letters and digits)
+        val randomPassword = (1..(8..12).random())
+            .map { (('a'..'z') + ('A'..'Z') + ('0'..'9')).random() }
+            .joinToString("")
+
         // Fill in the registration form with valid data
-        onView(withId(R.id.fullNameEditText)).perform(typeText("John Doe"), closeSoftKeyboard())
+        onView(withId(R.id.fullNameEditText)).perform(typeText(randomFullName), closeSoftKeyboard())
+        onView(withId(R.id.emailRegisterEditText)).perform(typeText(randomEmail), closeSoftKeyboard())
+        onView(withId(R.id.uscIdEditText)).perform(typeText(randomUscId), closeSoftKeyboard())
+        onView(withId(R.id.passwordRegisterEditText)).perform(typeText(randomPassword), closeSoftKeyboard())
 
-        onView(withId(R.id.emailEditText)).perform(typeText("john.doe@example.com"), closeSoftKeyboard())
-        onView(withId(R.id.passwordEditText)).perform(typeText("password123"), closeSoftKeyboard())
-
+        // Click the "Register" button
         onView(withId(R.id.registerButton)).perform(click())
 
         // Verify that the home screen is displayed (logout button exists)
         onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
-
     }
+
+
 }
