@@ -120,7 +120,7 @@ class AuthenticationTests {
         // Verify that still on register screen
         onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
     }
-    //TODO: INCOMPLETE. IT SHOULD WORK THE PROBLEM IS THE IMPLEMNTATION
+    //TODO: Complete
     @Test
     fun validRegistration() {
         ActivityScenario.launch(RegisterActivity::class.java)
@@ -165,5 +165,30 @@ class AuthenticationTests {
         onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
     }
 
+    //TODO: Completed
+    @Test
+    fun loginThenLogout() {
+        // Step 1: Launch the LoginActivity
+        ActivityScenario.launch(LoginActivity::class.java)
+
+        // Step 2: Log in with valid credentials
+        onView(withId(R.id.emailEditText))
+            .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
+        onView(withId(R.id.passwordEditText))
+            .perform(typeText("1234"), closeSoftKeyboard())
+        onView(withId(R.id.loginButton)).perform(click())
+
+        // Step 3: Wait for the home screen to load
+        Thread.sleep(2000)
+
+        // Step 4: Verify that the logout button is displayed
+        onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
+
+        // Step 5: Click the logout button
+        onView(withId(R.id.logout_button)).perform(click())
+
+        // Step 6: Verify that the login screen is displayed again
+        onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
+    }
 
 }
