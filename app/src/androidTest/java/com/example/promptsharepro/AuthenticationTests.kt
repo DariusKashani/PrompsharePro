@@ -21,7 +21,7 @@ class AuthenticationTests {
         onView(withId(R.id.passwordEditText)).perform(typeText("1234"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        // Verify that the home screen is displayed (logout button exists)
+        // Check if the home screen is displayed (logout button exists)
         onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
     }
     //TODO: Completed
@@ -43,7 +43,7 @@ class AuthenticationTests {
         // Leave both fields empty and attempt login
         onView(withId(R.id.loginButton)).perform(click())
 
-        // Verify it doesn't log in
+        // Check that it doesn't log in
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
     }
     //TODO: Completed
@@ -55,26 +55,24 @@ class AuthenticationTests {
         onView(withId(R.id.passwordEditText)).perform(typeText("wrongpassword"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        // Verify it doesn't log in
+        // Check if it doesn't log in
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
     }
     //TODO: Completed
     @Test
     fun navigateToRegistration() {
         ActivityScenario.launch(LoginActivity::class.java)
-        // Click on the register button from the login screen
+
         onView(withId(R.id.registerButton)).perform(click())
 
-        // Verify that the registration screen is displayed by checking the Full Name field
+        // Check if the registration screen is displayed by checking the Full Name field
         onView(withId(R.id.fullNameEditText)).check(matches(isDisplayed()))
     }
     //TODO: Completed
     @Test
     fun emptyFieldsRegistration() {
         ActivityScenario.launch(RegisterActivity::class.java)
-        // Fill in the registration form with valid data
 
-        // TODO: I think that maybe its not scrolling ot the registration they keyboard is getting in the way
         onView(withId(R.id.registerButton)).perform(click())
         // Verify that we are still on the register screen
         onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
@@ -97,7 +95,7 @@ class AuthenticationTests {
         onView(withId(R.id.passwordRegisterEditText))
             .perform(typeText("password123"), closeSoftKeyboard())
 
-        // Click the "Register" button
+        // Click "Register"
         onView(withId(R.id.registerButton)).perform(click())
 
         // Verify that the home screen is displayed (logout button exists)
@@ -120,7 +118,7 @@ class AuthenticationTests {
         // Verify that still on register screen
         onView(withId(R.id.registerButton)).check(matches(isDisplayed()))
     }
-    //TODO: Complete
+    //TODO: Completed
     @Test
     fun validRegistration() {
         ActivityScenario.launch(RegisterActivity::class.java)
@@ -157,37 +155,22 @@ class AuthenticationTests {
         onView(withId(R.id.emailRegisterEditText)).perform(typeText(randomEmail), closeSoftKeyboard())
         onView(withId(R.id.uscIdEditText)).perform(typeText(randomUscId), closeSoftKeyboard())
         onView(withId(R.id.passwordRegisterEditText)).perform(typeText(randomPassword), closeSoftKeyboard())
-
-        // Click the "Register" button
         onView(withId(R.id.registerButton)).perform(click())
-
-        // Verify that the home screen is displayed (logout button exists)
         onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
     }
 
     //TODO: Completed
     @Test
     fun loginThenLogout() {
-        // Step 1: Launch the LoginActivity
         ActivityScenario.launch(LoginActivity::class.java)
-
-        // Step 2: Log in with valid credentials
         onView(withId(R.id.emailEditText))
             .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
         onView(withId(R.id.passwordEditText))
             .perform(typeText("1234"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
-
-        // Step 3: Wait for the home screen to load
         Thread.sleep(2000)
-
-        // Step 4: Verify that the logout button is displayed
         onView(withId(R.id.logout_button)).check(matches(isDisplayed()))
-
-        // Step 5: Click the logout button
         onView(withId(R.id.logout_button)).perform(click())
-
-        // Step 6: Verify that the login screen is displayed again
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()))
     }
 

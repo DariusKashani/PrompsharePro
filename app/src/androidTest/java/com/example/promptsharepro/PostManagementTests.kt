@@ -8,7 +8,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.core.app.ActivityScenario
-import javax.annotation.MatchesPattern
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import android.view.View
+import org.hamcrest.Matcher
+
 
 
 @RunWith(AndroidJUnit4::class)
@@ -16,68 +21,88 @@ class PostManagementTests {
 
     @Test
     fun createPost() {
-        // Step 1: Launch the LoginActivity
         ActivityScenario.launch(LoginActivity::class.java)
 
-        // Step 2: Log in with valid credentials
+        // Step 1: Log in
         onView(withId(R.id.emailEditText)).perform(typeText("somou@usc.edu"), closeSoftKeyboard())
         onView(withId(R.id.passwordEditText)).perform(typeText("1234"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        // Step 3: Navigate to the "Create Post" screen
+        // Step 2: Navigate to "Create Post" screen
         onView(withId(R.id.create_post_button)) // Home screen button
             .perform(click())
 
-        // Step 4: Fill in the post title
+        // Randomize post title to ensure unique test data
+        val postTitle = "Test Post ${System.currentTimeMillis()}"
+        val postLLM = "GPT-4"
+        val postNotes = "This is a test post."
+
+        // Step 3: Fill in the form fields
         onView(withId(R.id.title_input))
-            .perform(typeText("Test Post"), closeSoftKeyboard())
-
-        // Step 5: Fill in the LLM field
+            .perform(typeText(postTitle), closeSoftKeyboard())
         onView(withId(R.id.llm_input))
-            .perform(typeText("GPT-4"), closeSoftKeyboard())
-
-        // Step 6: Fill in the notes input
+            .perform(typeText(postLLM), closeSoftKeyboard())
         onView(withId(R.id.notes_input))
-            .perform(typeText("This is a test post."), closeSoftKeyboard())
+            .perform(typeText(postNotes), closeSoftKeyboard())
 
-        // Step 7: Submit the post
+        // Step 4: Submit the post
         onView(withId(R.id.create_post_button)) // "Create Post" screen button
             .perform(click())
 
+        // Step 5: Search for the newly created post title
+        Thread.sleep(2000) // Allow the feed to refresh
+        onView(withId(R.id.search_input))
+            .perform(typeText(postTitle), closeSoftKeyboard())
+
+        Thread.sleep(2000) // Allow search results to update
+
+        // Step 6: Click on the first result in the feed
+        onView(withId(R.id.post_list))
+            .perform(clickChildViewAtPosition(0, R.id.read_more_button))
+
+        // Step 7: Verify that the post details match
+        onView(withId(R.id.post_title)).check(matches(withText(postTitle)))
+        onView(withId(R.id.post_llm)).check(matches(withText(postLLM)))
+        onView(withId(R.id.notes)).check(matches(withText(postNotes)))
     }
 
 
     @Test
     fun createPost_EmptyFields() {
-
-        // Step 1: Launch the LoginActivity
         ActivityScenario.launch(LoginActivity::class.java)
 
-        // Step 2: Log in with valid credentials
         onView(withId(R.id.emailEditText)).perform(typeText("somou@usc.edu"), closeSoftKeyboard())
         onView(withId(R.id.passwordEditText)).perform(typeText("1234"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        // Step 3: Navigate to the "Create Post" screen
-        onView(withId(R.id.create_post_button)) // Home screen button
+        onView(withId(R.id.create_post_button))
             .perform(click())
 
-        // Step 4: Don't fill in the post title
-
-        // Step 5: Fill in the LLM field
         onView(withId(R.id.llm_input))
             .perform(typeText("GPT-4"), closeSoftKeyboard())
-
-        // Step 6: Fill in the notes input
         onView(withId(R.id.notes_input))
             .perform(typeText("This is a test post."), closeSoftKeyboard())
 
-        // Step 7: Submit the post
-        onView(withId(R.id.create_post_button)) // "Create Post" screen button
+        onView(withId(R.id.create_post_button))
             .perform(click())
 
-        // Click the "Create Post" button
-        onView(withId(R.id.create_post_button)).perform(click())
+        onView(withId(R.id.create_post_button)).check(matches(isDisplayed())) // Ensure we are still on the same screen
+    }
 
+    /**
+     * Helper function to click on a child view (e.g., "Read More" button) at a specific position in a RecyclerView
+     */
+    private fun clickChildViewAtPosition(position: Int, childId: Int): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
+            override fun getDescription(): String = "Click on a child view with ID $childId at position $position"
+            override fun perform(uiController: UiController, view: View) {
+                val childView = view.findViewById<View>(childId)
+                    ?: throw PerformException.Builder()
+                        .withCause(Throwable("View with ID $childId not found"))
+                        .build()
+                childView.performClick()
+            }
+        }
     }
 }

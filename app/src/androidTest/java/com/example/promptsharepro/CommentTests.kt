@@ -45,6 +45,7 @@ class CommentTests {
         onView(withId(R.id.comment_input)).check(matches(isDisplayed()))
     }
 
+    // TODO: Do this one
     @Test
     fun addComment() {
         ActivityScenario.launch(LoginActivity::class.java)
@@ -56,7 +57,7 @@ class CommentTests {
             .perform(typeText("1234"), closeSoftKeyboard())
         onView(withId(R.id.loginButton)).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(2000) // Allow the login to complete and posts to load
 
         // Scroll and select the first post
         onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
@@ -71,14 +72,21 @@ class CommentTests {
             .perform(scrollTo(), typeText(randomComment), closeSoftKeyboard())
         onView(withId(R.id.add_comment_button)).perform(scrollTo(), click())
 
-        // Verify the comment was successfully added
-        Thread.sleep(1000) // Allow UI to update
+        // Allow time for the comment to be added
+        Thread.sleep(1000)
+
+        // Ensure the RecyclerView has the latest data
+        val lastCommentPosition = getLastCommentPosition()
+
+        // Scroll to the last comment
         onView(withId(R.id.comments_recycler_view))
-            .perform(scrollToPosition<RecyclerView.ViewHolder>(getLastCommentPosition()))
-        Thread.sleep(1000) // Allow UI to update
+            .perform(scrollToPosition<RecyclerView.ViewHolder>(lastCommentPosition))
+
+        // Verify the added comment is displayed at the bottom of the RecyclerView
         onView(allOf(withText(randomComment), isDescendantOfA(withId(R.id.comments_recycler_view))))
             .check(matches(isDisplayed()))
     }
+
 
     @Test
     fun addEmptyComment() {
@@ -223,5 +231,6 @@ private fun getLastCommentPosition(): Int {
             itemCount = recyclerView.adapter?.itemCount ?: 0
         }
     })
-    return itemCount - 1
+    return itemCount - 1 // Last position is itemCount - 1
 }
+
