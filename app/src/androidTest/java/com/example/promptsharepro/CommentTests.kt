@@ -32,6 +32,7 @@ class CommentTests {
 
         Thread.sleep(2000)
 
+        // Navigate to the first post
         onView(withId(R.id.post_list))
             .perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -40,9 +41,10 @@ class CommentTests {
                 )
             )
 
-        onView(withHint("Type here..."))
+        // Add a new comment
+        onView(withId(R.id.comment_input))
             .perform(scrollTo(), typeText("This is a new comment"), closeSoftKeyboard())
-        onView(withText("Add comment")).perform(scrollTo(), click())
+        onView(withId(R.id.add_comment_button)).perform(scrollTo(), click())
         Thread.sleep(1000)
         onView(withText("This is a new comment")).check(matches(isDisplayed()))
     }
@@ -84,6 +86,7 @@ class CommentTests {
 
         Thread.sleep(2000)
 
+        // Navigate to the first post
         onView(withId(R.id.post_list))
             .perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -92,10 +95,12 @@ class CommentTests {
                 )
             )
 
-        onView(withText("Add comment")).perform(scrollTo(), click())
+        // Attempt to add an empty comment
+        onView(withId(R.id.add_comment_button)).perform(scrollTo(), click())
         onView(withText("Comment cannot be empty")).check(matches(isDisplayed()))
     }
 
+    @Test
     fun upVotePost() {
         ActivityScenario.launch(LoginActivity::class.java)
 
@@ -108,7 +113,7 @@ class CommentTests {
 
         Thread.sleep(2000)
 
-        // Navigate to the post
+        // Navigate to the first post
         onView(withId(R.id.post_list))
             .perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -136,6 +141,7 @@ class CommentTests {
         onView(withId(R.id.post_rating)).check(matches(withText(expectedRating)))
     }
 
+    @Test
     fun downVotePost() {
         ActivityScenario.launch(LoginActivity::class.java)
 
@@ -148,7 +154,7 @@ class CommentTests {
 
         Thread.sleep(2000)
 
-        // Navigate to the post
+        // Navigate to the first post
         onView(withId(R.id.post_list))
             .perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(
