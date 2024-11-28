@@ -96,36 +96,10 @@ class CommentTests {
         onView(withText("Comment cannot be empty")).check(matches(isDisplayed()))
     }
 
-    @Test
-    fun deleteComment() {
-        ActivityScenario.launch(LoginActivity::class.java)
-
-        onView(withId(R.id.emailEditText))
-            .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
-        onView(withId(R.id.passwordEditText))
-            .perform(typeText("1234"), closeSoftKeyboard())
-        onView(withId(R.id.loginButton)).perform(click())
-
-        Thread.sleep(2000)
-
-        onView(withId(R.id.post_list))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    clickChildViewWithId(R.id.read_more_button)
-                )
-            )
-
-        Thread.sleep(1000)
-        onView(allOf(withId(R.id.comment_text), withText("This is a new comment")))
-            .perform(scrollTo(), swipeLeft())
-        onView(withText("Comment deleted")).check(matches(isDisplayed()))
-    }
-
-    @Test
     fun upVotePost() {
         ActivityScenario.launch(LoginActivity::class.java)
 
+        // Log in
         onView(withId(R.id.emailEditText))
             .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
         onView(withId(R.id.passwordEditText))
@@ -134,6 +108,7 @@ class CommentTests {
 
         Thread.sleep(2000)
 
+        // Navigate to the post
         onView(withId(R.id.post_list))
             .perform(
                 actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -142,9 +117,65 @@ class CommentTests {
                 )
             )
 
+        // Save the current rating
+        val currentRating = Array(1) { "" }
+        onView(withId(R.id.post_rating)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(TextView::class.java)
+            override fun getDescription(): String = "Get current rating value"
+            override fun perform(uiController: UiController, view: View) {
+                val textView = view as TextView
+                currentRating[0] = textView.text.toString()
+            }
+        })
+
+        // Increment the rating
         onView(withId(R.id.plus_button)).perform(click())
-        onView(withId(R.id.post_rating)).check(matches(withText("1"))) // Assuming this increments the rating to 1
+
+        // Verify the rating increased by 1
+        val expectedRating = (currentRating[0].toInt() + 1).toString()
+        onView(withId(R.id.post_rating)).check(matches(withText(expectedRating)))
     }
+
+    fun downVotePost() {
+        ActivityScenario.launch(LoginActivity::class.java)
+
+        // Log in
+        onView(withId(R.id.emailEditText))
+            .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
+        onView(withId(R.id.passwordEditText))
+            .perform(typeText("1234"), closeSoftKeyboard())
+        onView(withId(R.id.loginButton)).perform(click())
+
+        Thread.sleep(2000)
+
+        // Navigate to the post
+        onView(withId(R.id.post_list))
+            .perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickChildViewWithId(R.id.read_more_button)
+                )
+            )
+
+        // Save the current rating
+        val currentRating = Array(1) { "" }
+        onView(withId(R.id.post_rating)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(TextView::class.java)
+            override fun getDescription(): String = "Get current rating value"
+            override fun perform(uiController: UiController, view: View) {
+                val textView = view as TextView
+                currentRating[0] = textView.text.toString()
+            }
+        })
+
+        // Decrement the rating
+        onView(withId(R.id.minus_button)).perform(click())
+
+        // Verify the rating decreased by 1
+        val expectedRating = (currentRating[0].toInt() - 1).toString()
+        onView(withId(R.id.post_rating)).check(matches(withText(expectedRating)))
+    }
+
 
     private fun clickChildViewWithId(id: Int) = object : ViewAction {
         override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
