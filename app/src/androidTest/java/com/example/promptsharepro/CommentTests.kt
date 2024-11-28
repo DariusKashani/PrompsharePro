@@ -15,7 +15,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import android.view.View
-import org.hamcrest.Matchers.allOf
+import android.widget.TextView
 
 @RunWith(AndroidJUnit4::class)
 class CommentTests {
