@@ -5,8 +5,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.*
-import androidx.recyclerview.widget.RecyclerView
 import org.hamcrest.Matcher
 import org.junit.Test
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -32,14 +30,10 @@ class CommentTests {
 
         Thread.sleep(2000)
 
-        // Navigate to the first post
+        // Scroll and select the first post
+        onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
         onView(withId(R.id.post_list))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    clickChildViewWithId(R.id.read_more_button)
-                )
-            )
+            .perform(clickChildViewAtPosition(0, R.id.read_more_button))
 
         // Add a new comment
         onView(withId(R.id.comment_input))
@@ -63,15 +57,9 @@ class CommentTests {
             .perform(typeText("test"), closeSoftKeyboard())
         Thread.sleep(2000)
 
+        onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
         onView(withId(R.id.post_list))
-            .perform(scrollToPosition<RecyclerView.ViewHolder>(0))
-        onView(withId(R.id.post_list))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    clickChildViewWithId(R.id.read_more_button)
-                )
-            )
+            .perform(clickChildViewAtPosition(0, R.id.read_more_button))
     }
 
     @Test
@@ -86,14 +74,10 @@ class CommentTests {
 
         Thread.sleep(2000)
 
-        // Navigate to the first post
+        // Scroll and select the first post
+        onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
         onView(withId(R.id.post_list))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    clickChildViewWithId(R.id.read_more_button)
-                )
-            )
+            .perform(clickChildViewAtPosition(0, R.id.read_more_button))
 
         // Attempt to add an empty comment
         onView(withId(R.id.add_comment_button)).perform(scrollTo(), click())
@@ -104,7 +88,6 @@ class CommentTests {
     fun upVotePost() {
         ActivityScenario.launch(LoginActivity::class.java)
 
-        // Log in
         onView(withId(R.id.emailEditText))
             .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
         onView(withId(R.id.passwordEditText))
@@ -113,14 +96,10 @@ class CommentTests {
 
         Thread.sleep(2000)
 
-        // Navigate to the first post
+        // Scroll and select the first post
+        onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
         onView(withId(R.id.post_list))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    clickChildViewWithId(R.id.read_more_button)
-                )
-            )
+            .perform(clickChildViewAtPosition(0, R.id.read_more_button))
 
         // Save the current rating
         val currentRating = Array(1) { "" }
@@ -145,7 +124,6 @@ class CommentTests {
     fun downVotePost() {
         ActivityScenario.launch(LoginActivity::class.java)
 
-        // Log in
         onView(withId(R.id.emailEditText))
             .perform(typeText("somou@usc.edu"), closeSoftKeyboard())
         onView(withId(R.id.passwordEditText))
@@ -154,14 +132,10 @@ class CommentTests {
 
         Thread.sleep(2000)
 
-        // Navigate to the first post
+        // Scroll and select the first post
+        onView(withId(R.id.main_scroll_view)).perform(scrollToBottomOrFivePosts())
         onView(withId(R.id.post_list))
-            .perform(
-                actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    0,
-                    clickChildViewWithId(R.id.read_more_button)
-                )
-            )
+            .perform(clickChildViewAtPosition(0, R.id.read_more_button))
 
         // Save the current rating
         val currentRating = Array(1) { "" }
@@ -182,16 +156,28 @@ class CommentTests {
         onView(withId(R.id.post_rating)).check(matches(withText(expectedRating)))
     }
 
+    private fun scrollToBottomOrFivePosts(): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
+            override fun getDescription(): String = "Scroll to the bottom or next 5 posts"
+            override fun perform(uiController: UiController, view: View) {
+                view.scrollBy(0, 500) // Adjust based on your layout
+                uiController.loopMainThreadUntilIdle()
+            }
+        }
+    }
 
-    private fun clickChildViewWithId(id: Int) = object : ViewAction {
-        override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
-        override fun getDescription(): String = "Click on a child view with ID $id"
-        override fun perform(uiController: UiController, view: View) {
-            val childView = view.findViewById<View>(id)
-                ?: throw PerformException.Builder()
-                    .withCause(Throwable("View with ID $id not found"))
-                    .build()
-            childView.performClick()
+    private fun clickChildViewAtPosition(position: Int, childId: Int): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isAssignableFrom(View::class.java)
+            override fun getDescription(): String = "Click on child view with id $childId at position $position"
+            override fun perform(uiController: UiController, view: View) {
+                val childView = view.findViewById<View>(childId)
+                    ?: throw PerformException.Builder()
+                        .withCause(Throwable("View with ID $childId not found"))
+                        .build()
+                childView.performClick()
+            }
         }
     }
 }
