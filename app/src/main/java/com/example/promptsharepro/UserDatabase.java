@@ -10,7 +10,7 @@ import java.net.URL;
 
 public class UserDatabase {
 
-    private static final String BASE_URL = "https://promptshareproserver-production.up.railway.app"; // Replace with your FastAPI server URL
+    private static final String BASE_URL = "https://promptshareproserver-production.up.railway.app";
     private static UserDatabase instance;
 
     private UserDatabase() {
@@ -83,7 +83,7 @@ public class UserDatabase {
                 String userName = userData[1].split(":")[1].replace("\"", "");
                 String userEmail = userData[2].split(":")[1].replace("\"", "");
 
-                return new User(userId, userName, userEmail, ""); // Password not returned for security
+                return new User(userId, userName, userEmail, "");
             } else {
                 conn.disconnect();
                 return null;

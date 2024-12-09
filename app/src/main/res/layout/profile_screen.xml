@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Back to Home Button -->
     <TextView
         android:id="@+id/back_to_home_button"
         android:layout_width="wrap_content"
@@ -28,7 +27,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Caption -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -80,7 +78,6 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Email Field -->
             <EditText
                 android:id="@+id/edit_email"
                 android:layout_width="match_parent"
@@ -92,7 +89,6 @@
                 android:inputType="textEmailAddress"
                 android:focusable="false" />
 
-            <!-- Username Field -->
             <EditText
                 android:id="@+id/edit_username"
                 android:layout_width="match_parent"
@@ -102,7 +98,6 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background" />
 
-            <!-- Password Field -->
             <EditText
                 android:id="@+id/edit_password"
                 android:layout_width="match_parent"
@@ -113,7 +108,6 @@
                 android:background="@drawable/edittext_background"
                 android:inputType="textPassword" />
 
-            <!-- Re-type Password Field -->
             <EditText
                 android:id="@+id/edit_retype_password"
                 android:layout_width="match_parent"
@@ -124,7 +118,6 @@
                 android:background="@drawable/edittext_background"
                 android:inputType="textPassword" />
 
-            <!-- Submit Button -->
             <Button
                 android:id="@+id/submit_button"
                 android:layout_width="match_parent"

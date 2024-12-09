@@ -139,7 +139,7 @@ public class SinglePostScreenActivity extends AppCompatActivity {
         ratingTextView.setText(String.valueOf(currentRating));
 
         post.setPostRating(updatedPostRating);
-        postDatabase.updatePost(post.getPostId(), post.getPostTitle(), post.getPostAuthor(), post.getPostLLM(), post.getPostNotes(), updatedPostRating); // Assuming this method updates the database
+        postDatabase.updatePost(post.getPostId(), post.getPostTitle(), post.getPostAuthor(), post.getPostLLM(), post.getPostNotes(), updatedPostRating); //
     }
 
     private void addComment() {

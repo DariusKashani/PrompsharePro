@@ -19,7 +19,6 @@ public class CreatePostScreenActivity extends AppCompatActivity {
 
         postDatabase = PostDatabase.getInstance();
 
-        // Retrieve the username passed from HomeScreenActivity
         username = getIntent().getStringExtra("username");
 
         ImageView backButton = findViewById(R.id.back_button);

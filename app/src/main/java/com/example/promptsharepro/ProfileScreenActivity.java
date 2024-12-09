@@ -28,7 +28,6 @@ public class ProfileScreenActivity extends AppCompatActivity {
         numCommentsText = findViewById(R.id.num_comments);
         avgRatingText = findViewById(R.id.avg_rating);
 
-        // Pre-fill username and email if passed
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
         String email = intent.getStringExtra("useremail");
@@ -40,13 +39,12 @@ public class ProfileScreenActivity extends AppCompatActivity {
             emailInput.setText(email);
         }
 
-        // Load statistics
         if (email != null) {
             loadStatistics(username);
         }
 
         TextView backToHomeButton = findViewById(R.id.back_to_home_button);
-        backToHomeButton.setOnClickListener(view -> finish()); // Simply finish to go back to the previous screen
+        backToHomeButton.setOnClickListener(view -> finish());
 
         Button submitButton = findViewById(R.id.submit_button);
         submitButton.setOnClickListener(view -> {
@@ -64,17 +62,15 @@ public class ProfileScreenActivity extends AppCompatActivity {
                 return;
             }
 
-            // Interact with UserDatabase to update the user
             UserDatabase userDatabase = UserDatabase.getInstance();
             boolean isUpdated = userDatabase.updateUser(email, newUsername, password);
 
             if (isUpdated) {
                 Toast.makeText(ProfileScreenActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                // Return updated username to HomeScreenActivity
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("username", newUsername);
                 setResult(RESULT_OK, resultIntent);
-                finish(); // Return to the home screen after updating
+                finish();
             } else {
                 Toast.makeText(ProfileScreenActivity.this, "Failed to update profile. Please try again.", Toast.LENGTH_SHORT).show();
             }
@@ -95,7 +91,6 @@ public class ProfileScreenActivity extends AppCompatActivity {
                     postCount++;
                     totalComments += post.getComments().size();
 
-                    // Extract and parse the rating
                     try {
                         String postRating = post.getPostRating();
                         if (postRating.startsWith("rating:")) {
@@ -103,14 +98,12 @@ public class ProfileScreenActivity extends AppCompatActivity {
                             totalRating += Double.parseDouble(ratingPart);
                         }
                     } catch (Exception e) {
-                        // Ignore any parsing errors
                     }
                 }
             }
 
             double avgRating = postCount > 0 ? totalRating / postCount : 0.0;
 
-            // Update UI on the main thread
             int finalPostCount = postCount;
             int finalTotalComments = totalComments;
             runOnUiThread(() -> {

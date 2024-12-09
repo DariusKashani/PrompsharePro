@@ -13,8 +13,8 @@ import java.util.List;
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
     private List<PostDatabase.Comment> comments;
-    private String username; // Logged-in user
-    private String postId;   // ID of the post
+    private String username;
+    private String postId;
     private OnCommentDeletedListener onCommentDeletedListener;
 
     public CommentsAdapter(List<PostDatabase.Comment> comments, String username, String postId, OnCommentDeletedListener listener) {
@@ -37,7 +37,6 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         holder.commentText.setText(comment.getCommentNotes());
         holder.commentAuthor.setText(comment.getCommentAuthor());
 
-        // Show delete button only if the comment author matches the logged-in user
         if (comment.getCommentAuthor().equals(username)) {
             holder.deleteCommentButton.setVisibility(View.VISIBLE);
             holder.deleteCommentButton.setOnClickListener(view -> {

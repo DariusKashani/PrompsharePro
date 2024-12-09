@@ -142,7 +142,6 @@ public class PostDatabase {
                 }
                 reader.close();
 
-                // Parse the JSON response to extract the commentId
                 JSONObject jsonResponse = new JSONObject(response.toString());
                 if (jsonResponse.has("commentId")) {
                     commentId = jsonResponse.getString("commentId");

@@ -27,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         fullNameEditText = findViewById(R.id.fullNameEditText);
         emailEditText = findViewById(R.id.emailRegisterEditText);
-        uscIdEditText = findViewById(R.id.uscIdEditText); // USC ID field
+        uscIdEditText = findViewById(R.id.uscIdEditText);
         passwordEditText = findViewById(R.id.passwordRegisterEditText);
         registerButton = findViewById(R.id.registerButton);
         loginButton = findViewById(R.id.loginButton);
