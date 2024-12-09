@@ -6,12 +6,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeScreenActivity extends AppCompatActivity {
@@ -19,16 +17,30 @@ public class HomeScreenActivity extends AppCompatActivity {
     private List<PostDatabase.Post> displayedPosts;
     private LinearLayout postListLayout;
     private EditText searchInput;
+    private Spinner filterSpinner;
     private PostDatabase postDatabase;
     private String username;
+    private String useremail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
+        filterSpinner = findViewById(R.id.search_filter_spinner);
+        searchInput = findViewById(R.id.search_input);
+
+        Button goToProfileButton = findViewById(R.id.go_to_profile_button);
+        goToProfileButton.setOnClickListener(view -> {
+            Intent profileIntent = new Intent(HomeScreenActivity.this, ProfileScreenActivity.class);
+            profileIntent.putExtra("username", username);
+            profileIntent.putExtra("useremail", useremail);
+            startActivityForResult(profileIntent, 1); // Use a request code
+        });
+
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
+        useremail = intent.getStringExtra("useremail");
 
         TextView greetingTextView = findViewById(R.id.greeting);
         greetingTextView.setText("Hi, " + username + "!");
@@ -51,7 +63,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         });
 
         postListLayout = findViewById(R.id.post_list);
-        searchInput = findViewById(R.id.search_input);
+
+        // Listen to changes in the search input
         searchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -65,6 +78,17 @@ public class HomeScreenActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
+        // Update post list when the dropdown selection changes
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filterPosts(searchInput.getText().toString()); // Apply current search input with the new filter
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         updatePostList();
     }
 
@@ -74,13 +98,67 @@ public class HomeScreenActivity extends AppCompatActivity {
         updatePostList();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) { // Check if the request code and result code match
+            if (data != null && data.hasExtra("username")) {
+                username = data.getStringExtra("username");
+                TextView greetingTextView = findViewById(R.id.greeting);
+                greetingTextView.setText("Hi, " + username + "!");
+            }
+        }
+    }
+
     private void updatePostList() {
         displayedPosts = postDatabase.getAllPosts("");
         displayPosts(displayedPosts);
     }
 
     private void filterPosts(String query) {
-        displayedPosts = postDatabase.getAllPosts(query);
+        // Fetch all posts first
+        List<PostDatabase.Post> allPosts = postDatabase.getAllPosts("");
+
+        // Check if the search input is empty
+        if (query.trim().isEmpty()) {
+            // If no text is entered, display all posts
+            displayedPosts = allPosts;
+        } else {
+            // Filter posts based on the selected dropdown filter and search query
+            String selectedFilter = filterSpinner.getSelectedItem().toString().toLowerCase();
+            displayedPosts = new ArrayList<>();
+
+            for (PostDatabase.Post post : allPosts) {
+                switch (selectedFilter) {
+                    case "author":
+                        if (post.getPostAuthor().toLowerCase().contains(query.toLowerCase())) {
+                            displayedPosts.add(post);
+                        }
+                        break;
+                    case "model":
+                        if (post.getPostLLM().toLowerCase().contains(query.toLowerCase())) {
+                            displayedPosts.add(post);
+                        }
+                        break;
+                    case "notes":
+                        if (post.getPostNotes().toLowerCase().contains(query.toLowerCase())) {
+                            displayedPosts.add(post);
+                        }
+                        break;
+                    case "all":
+                    default:
+                        // If "All" is selected, match any field
+                        if (post.getPostAuthor().toLowerCase().contains(query.toLowerCase()) ||
+                                post.getPostLLM().toLowerCase().contains(query.toLowerCase()) ||
+                                post.getPostNotes().toLowerCase().contains(query.toLowerCase())) {
+                            displayedPosts.add(post);
+                        }
+                        break;
+                }
+            }
+        }
+
+        // Display the filtered posts
         displayPosts(displayedPosts);
     }
 
@@ -112,6 +190,19 @@ public class HomeScreenActivity extends AppCompatActivity {
 
             TextView notes = postItem.findViewById(R.id.post_notes);
             notes.setText(post.getPostNotes());
+
+            // Only display the delete button if the post author matches the logged-in user
+            ImageButton trashButton = postItem.findViewById(R.id.trash_button);
+            if (post.getPostAuthor().equals(username)) {
+                trashButton.setVisibility(View.VISIBLE);
+                trashButton.setOnClickListener(view -> {
+                    postDatabase.deletePost(post.getPostId());
+                    Toast.makeText(this, "Post deleted", Toast.LENGTH_SHORT).show();
+                    updatePostList();
+                });
+            } else {
+                trashButton.setVisibility(View.GONE);
+            }
 
             Button readMoreButton = postItem.findViewById(R.id.read_more_button);
             readMoreButton.setOnClickListener(view -> {
