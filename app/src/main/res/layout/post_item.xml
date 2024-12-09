@@ -51,6 +51,17 @@
             android:padding="4dp"
             android:background="@drawable/rating_background"
             android:layout_marginStart="8dp" />
+
+        <!-- Trash button -->
+        <ImageButton
+            android:id="@+id/trash_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_trash"
+            android:contentDescription="Delete Post"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="8dp"
+            android:tint="#FF0000" />
     </LinearLayout>
 
     <TextView

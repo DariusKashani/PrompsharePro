@@ -94,6 +94,31 @@ public class UserDatabase {
         }
     }
 
+    public boolean updateUser(String userEmail, String newUserName, String newPassword) {
+        try {
+            StringBuilder urlString = new StringBuilder(BASE_URL + "/updateUser?email=" + userEmail);
+            if (newUserName != null && !newUserName.isEmpty()) {
+                urlString.append("&username=").append(newUserName);
+            }
+            if (newPassword != null && !newPassword.isEmpty()) {
+                urlString.append("&password=").append(newPassword);
+            }
+
+            URL url = new URL(urlString.toString());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("UserDatabase", "Update error: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static class User {
         private String userId;
         private String userName;

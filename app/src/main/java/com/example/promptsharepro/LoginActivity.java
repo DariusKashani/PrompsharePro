@@ -40,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (userDatabase.loginUser(email, password)) {
                     Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                     intent.putExtra("username", userDatabase.getUserByEmail(email).getUserName());
+                    intent.putExtra("useremail", email);
                     startActivity(intent);
                     finish();
                 } else {

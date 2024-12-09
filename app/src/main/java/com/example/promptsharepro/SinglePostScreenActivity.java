@@ -79,12 +79,18 @@ public class SinglePostScreenActivity extends AppCompatActivity {
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<PostDatabase.Comment> comments = post.getComments();
-        commentsAdapter = new CommentsAdapter(comments);
+        commentsAdapter = new CommentsAdapter(comments, username, post.getPostId(), this::updateComments);
         commentsRecyclerView.setAdapter(commentsAdapter);
 
         commentInput = findViewById(R.id.comment_input);
         Button addCommentButton = findViewById(R.id.add_comment_button);
         addCommentButton.setOnClickListener(view -> addComment());
+    }
+
+    // Callback to refresh comments or other UI after a comment is deleted
+    private void updateComments() {
+        // Logic to refresh comments or perform other actions
+        commentsAdapter.notifyDataSetChanged();
     }
 
     private void setupRatingControls() {
@@ -143,10 +149,10 @@ public class SinglePostScreenActivity extends AppCompatActivity {
             return;
         }
 
-        boolean success = postDatabase.createComment(post.getPostId(), String.valueOf(post.getComments().size() + 1), commentText, username);
+        String commentId = postDatabase.createComment(post.getPostId(), commentText, username);
 
-        if (success) {
-            PostDatabase.Comment newComment = new PostDatabase.Comment(String.valueOf(post.getComments().size() + 1), commentText, username);
+        if (commentId != null) {
+            PostDatabase.Comment newComment = new PostDatabase.Comment(commentId, commentText, username);
             post.getComments().add(newComment);
 
             commentsAdapter.notifyItemInserted(post.getComments().size() - 1);
@@ -154,6 +160,7 @@ public class SinglePostScreenActivity extends AppCompatActivity {
             commentsRecyclerView.scrollToPosition(post.getComments().size() - 1);
 
             commentInput.setText("");
+            Toast.makeText(this, "Comment added successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Failed to add comment", Toast.LENGTH_SHORT).show();
         }

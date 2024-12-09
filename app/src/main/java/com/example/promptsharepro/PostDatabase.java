@@ -122,7 +122,8 @@ public class PostDatabase {
         }
     }
 
-    public boolean createComment(String postId, String commentNotes, String commentAuthor, String currentUser) {
+    public String createComment(String postId, String commentNotes, String commentAuthor) {
+        String commentId = null;
         try {
             String urlString = BASE_URL + "/createComment?postId=" + postId + "&commentNotes=" + commentNotes +
                     "&commentAuthor=" + commentAuthor;
@@ -131,11 +132,60 @@ public class PostDatabase {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                // Parse the JSON response to extract the commentId
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                if (jsonResponse.has("commentId")) {
+                    commentId = jsonResponse.getString("commentId");
+                }
+            }
+
+            conn.disconnect();
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error creating comment: " + e.getMessage());
+        }
+
+        return commentId;
+    }
+
+
+    public boolean deletePost(String postId) {
+        try {
+            String urlString = BASE_URL + "/deletePost?postId=" + postId;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("DELETE");
+
             int responseCode = conn.getResponseCode();
             conn.disconnect();
             return responseCode == HttpURLConnection.HTTP_OK;
         } catch (Exception e) {
-            Log.e("PostDatabase", "Error creating comment: " + e.getMessage());
+            Log.e("PostDatabase", "Error deleting post: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deleteComment(String postId, String commentId) {
+        try {
+            String urlString = BASE_URL + "/deleteComment?postId=" + postId + "&commentId=" + commentId;
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("DELETE");
+
+            int responseCode = conn.getResponseCode();
+            conn.disconnect();
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            Log.e("PostDatabase", "Error deleting comment: " + e.getMessage());
             return false;
         }
     }

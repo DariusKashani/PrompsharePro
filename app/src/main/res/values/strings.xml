@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PromptsharePro</string>
+    <string-array name="search_filter_options">
+        <item>Author</item>
+        <item>Model</item>
+        <item>Notes</item>
+        <item>All</item>
+    </string-array>
 </resources>
